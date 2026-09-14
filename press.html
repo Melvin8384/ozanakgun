@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Press | Ozan Akgun</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f9f8f6;
+      --fg: #111;
+      --mid: #888;
+      --nav-h: 80px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAV ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .logo img {
+      height: 64px;
+      width: auto;
+      max-width: 160px;
+      object-fit: contain;
+      display: block;
+    }
+
+    nav {
+      display: flex;
+      gap: 36px;
+    }
+
+    nav a {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--mid);
+      transition: color 0.2s;
+    }
+
+    nav a:hover, nav a.active { color: var(--fg); }
+
+    .social {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .social a {
+      display: flex;
+      align-items: center;
+      color: var(--mid);
+      transition: color 0.2s;
+    }
+
+    .social a:hover { color: var(--fg); }
+
+    .social svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    /* ── PRESS ── */
+    main {
+      flex: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 60px 40px 100px;
+    }
+
+    .press-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .press-item {
+      display: block;
+      overflow: hidden;
+      background: #e8e6e2;
+      position: relative;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .press-item:nth-child(1) { animation-delay: 0.05s; grid-column: span 1; }
+    .press-item:nth-child(2) { animation-delay: 0.15s; grid-column: span 1; }
+    .press-item:nth-child(3) { animation-delay: 0.25s; grid-column: span 2; }
+
+    .press-item img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    .press-item img.loaded { opacity: 1; }
+    .press-item:hover img { transform: scale(1.02); }
+
+    .press-item .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      transition: background 0.3s ease;
+      display: flex;
+      align-items: flex-end;
+      padding: 20px;
+    }
+
+    .press-item:hover .overlay {
+      background: rgba(0,0,0,0.12);
+    }
+
+    .press-item .arrow {
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      font-size: 20px;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .press-item:hover .arrow {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* aspect ratios */
+    .press-item { aspect-ratio: 3 / 2; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid rgba(0,0,0,0.08);
+      padding: 24px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer a {
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      color: var(--mid);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    footer a:hover { color: var(--fg); }
+
+    footer p {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: #bbb;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 680px) {
+      header { padding: 0 20px; }
+      nav { gap: 20px; }
+      main { padding: 40px 20px 60px; }
+      footer { padding: 20px; }
+      .press-grid { grid-template-columns: 1fr; }
+      .press-item:nth-child(1),
+      .press-item:nth-child(2),
+      .press-item:nth-child(3) { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo" aria-label="Ozan Akgun – Home">
+      <img src="https://static.wixstatic.com/media/61469c_1773cc6772884909a8d885f00c2519e2~mv2.png/v1/crop/x_0,y_1,w_1241,h_1241/fill/w_292,h_292,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/ozanakg%C3%BCn-logo-01.png" alt="Ozan Akgun logo">
+    </a>
+    <nav>
+      <a href="index.html">Work</a>
+      <a href="about.html">About</a>
+      <a href="press.html" class="active">Press</a>
+    </nav>
+    <div class="social">
+      <a href="https://www.instagram.com/ozan_akgun/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      </a>
+      <a href="https://www.linkedin.com/in/ozan-akgun-35199613/" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      <a href="https://twitter.com/OzanAkgun" target="_blank" rel="noopener" aria-label="Twitter">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.261 5.632 5.903-5.632zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <div class="press-grid">
+
+      <a class="press-item" href="https://issuu.com/docs/dad3298c23bc5792e93b5ad74a2b9214?fr=sNzM5MTgzNDQ3MjE" target="_blank" rel="noopener">
+        <img
+          src="https://static.wixstatic.com/media/61469c_362593293d334493b23aa1dcc4fe2b3d~mv2.png/v1/fit/w_936,h_590,q_90,enc_avif,quality_auto/61469c_362593293d334493b23aa1dcc4fe2b3d~mv2.png"
+          alt="Press feature 1"
+          loading="lazy"
+        >
+        <div class="overlay"><span class="arrow">↗</span></div>
+      </a>
+
+      <a class="press-item" href="https://issuu.com/docs/dad3298c23bc5792e93b5ad74a2b9214?fr=sNzM5MTgzNDQ3MjE" target="_blank" rel="noopener">
+        <img
+          src="https://static.wixstatic.com/media/61469c_bea954daa2d44602a8eaf99fdb5d8439~mv2.png/v1/fit/w_936,h_590,q_90,enc_avif,quality_auto/61469c_bea954daa2d44602a8eaf99fdb5d8439~mv2.png"
+          alt="Press feature 2"
+          loading="lazy"
+        >
+        <div class="overlay"><span class="arrow">↗</span></div>
+      </a>
+
+      <a class="press-item" href="https://www.broadcastnow.co.uk/comment/creating-3d-crowds-on-set-for-wicked/5205580.article" target="_blank" rel="noopener">
+        <img
+          src="https://static.wixstatic.com/media/61469c_cac6adbad3fd4bcab880cfa66940980b~mv2.png/v1/fit/w_1920,h_590,q_90,enc_avif,quality_auto/61469c_cac6adbad3fd4bcab880cfa66940980b~mv2.png"
+          alt="Broadcast Now – Creating 3D Crowds on Set for Wicked"
+          loading="lazy"
+        >
+        <div class="overlay"><span class="arrow">↗</span></div>
+      </a>
+
+    </div>
+  </main>
+
+  <footer>
+    <a href="mailto:ozan.akgun@gmail.com">ozan.akgun@gmail.com</a>
+    <p>©2024 Ozan Akgun</p>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.press-item img').forEach(img => {
+      if (img.complete) img.classList.add('loaded');
+      else img.addEventListener('load', () => img.classList.add('loaded'));
+    });
+  </script>
+</body>
+</html>
