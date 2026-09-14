@@ -11,10 +11,10 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #f9f8f6;
-      --fg: #111;
-      --mid: #888;
-      --nav-h: 80px;
+      --bg: #cfd9ea;
+      --fg: #1a2d5a;
+      --mid: #6a7a9a;
+      --nav-h: unset;
     }
 
     body {
@@ -33,18 +33,17 @@
       top: 0;
       z-index: 100;
       background: var(--bg);
-      height: var(--nav-h);
+      padding: 24px 48px 20px;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
-      padding: 0 40px;
-      border-bottom: 1px solid rgba(0,0,0,0.08);
+      gap: 24px;
     }
 
     .logo img {
-      height: 64px;
+      height: 120px;
       width: auto;
-      max-width: 160px;
+      max-width: 220px;
       object-fit: contain;
       display: block;
     }
