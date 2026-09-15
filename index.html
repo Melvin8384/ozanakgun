@@ -6,215 +6,107 @@
   <title>Work | Ozan Akgun</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#cdd6e8;--fg:#1a2d5a;--mid:#6a7a9a;--gap:3px}
+    body{background:var(--bg);color:var(--fg);font-family:'Jost',sans-serif;font-weight:300;min-height:100vh;display:flex;flex-direction:column}
 
-    :root {
-      --bg: #cfd9ea;        /* light periwinkle blue — matches Wix */
-      --fg: #1a2d5a;        /* dark navy */
-      --mid: #6a7a9a;
-      --gap: 5px;
+    /* HEADER */
+    header{background:var(--bg);padding:28px 50px 40px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .logo img{height:130px;width:auto;display:block;object-fit:contain}
+    .header-right{display:flex;align-items:center;gap:36px}
+    nav{display:flex;gap:28px}
+    nav a{font-size:14px;letter-spacing:.04em;text-decoration:none;color:var(--mid);transition:color .2s}
+    nav a:hover,nav a.active{color:var(--fg)}
+    .social{display:flex;align-items:center;gap:14px}
+    .social a{display:flex;align-items:center;color:var(--mid);transition:color .2s}
+    .social a:hover{color:var(--fg)}
+    .social svg{width:17px;height:17px;fill:currentColor}
+
+    /* MAIN */
+    main{flex:1;display:flex;flex-direction:column;gap:var(--gap)}
+
+    /* GRID BLOCKS
+       .g3  = 3 equal columns
+       .g2  = 2 equal columns
+       .gc  = complex: 3 cols where first item spans 2 cols + 2 rows
+    */
+    .g3,.g2,.gc{display:grid;gap:var(--gap)}
+    .g3{grid-template-columns:repeat(3,1fr)}
+    .g2{grid-template-columns:repeat(2,1fr)}
+    .gc{grid-template-columns:repeat(3,1fr)}
+    .gc .big{grid-column:span 2;grid-row:span 2}
+
+    /* GRID ITEM */
+    .grid-item{
+      position:relative;overflow:hidden;
+      background:#0f1520;cursor:pointer;
+      aspect-ratio:16/9;
     }
-
-    html { scroll-behavior: smooth; }
-    body { background: var(--bg); color: var(--fg); font-family: 'Jost', sans-serif; font-weight: 300; min-height: 100vh; display: flex; flex-direction: column; }
-
-    /* ── HEADER ── */
-    header {
-      background: var(--bg);
-      padding: 24px 48px 20px;
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 24px;
+    .grid-item img.thumb{
+      position:absolute;inset:0;width:100%;height:100%;
+      object-fit:cover;display:block;
+      transition:transform .55s cubic-bezier(.25,.46,.45,.94),opacity .3s;
+      opacity:0
     }
+    .grid-item img.thumb.loaded{opacity:1}
+    .grid-item:hover img.thumb{transform:scale(1.04)}
+    .hover-layer{position:absolute;inset:0;z-index:2;background:rgba(0,0,0,0);transition:background .3s}
+    .grid-item:hover .hover-layer{background:rgba(0,0,0,.18)}
+    .play-icon{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .25s}
+    .grid-item:hover .play-icon{opacity:1}
+    .play-btn{width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 16px rgba(0,0,0,.3);transition:transform .2s,background .2s}
+    .play-btn svg{width:20px;height:20px;fill:var(--fg);margin-left:3px}
+    .grid-item:hover .play-btn{transform:scale(1.1);background:rgba(255,255,255,.96)}
+    .gallery-count{position:absolute;bottom:10px;right:12px;z-index:3;background:rgba(0,0,0,.5);color:#fff;font-size:11px;letter-spacing:.07em;padding:2px 7px;border-radius:2px;opacity:0;transition:opacity .25s;backdrop-filter:blur(4px)}
+    .grid-item:hover .gallery-count{opacity:1}
 
-    /* Logo — large, top-left */
-    .logo { display: flex; align-items: flex-start; flex-shrink: 0; }
-    .logo img {
-      height: 120px;
-      width: auto;
-      max-width: 220px;
-      object-fit: contain;
-      display: block;
+    /* LIGHTBOX */
+    #lightbox{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0);display:flex;align-items:center;justify-content:center;padding:40px;pointer-events:none;transition:background .3s}
+    #lightbox.open{background:rgba(0,0,0,.92);pointer-events:all}
+    .lb-inner{position:relative;width:100%;max-width:960px;transform:scale(.94) translateY(18px);opacity:0;transition:transform .35s cubic-bezier(.34,1.4,.64,1),opacity .28s}
+    #lightbox.open .lb-inner{transform:scale(1) translateY(0);opacity:1}
+    #lb-close{position:absolute;top:-44px;right:0;background:none;border:none;color:#fff;font-size:26px;cursor:pointer;opacity:.6;transition:opacity .2s,transform .2s;padding:4px 8px}
+    #lb-close:hover{opacity:1;transform:rotate(90deg)}
+    #lb-video-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;display:none}
+    #lb-iframe{width:100%;height:100%;border:none;display:block}
+    #lb-image-wrap{position:relative;width:100%;display:none;align-items:center;justify-content:center}
+    #lb-img{max-width:100%;max-height:84vh;display:block;object-fit:contain;margin:0 auto}
+    .lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);border:none;cursor:pointer;color:#fff;font-size:22px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;transition:background .2s;backdrop-filter:blur(4px);border-radius:2px}
+    .lb-nav:hover{background:rgba(255,255,255,.22)}
+    #lb-prev{left:-60px}#lb-next{right:-60px}
+    .lb-nav.hidden{display:none}
+    #lb-counter{position:absolute;bottom:-32px;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:.1em;color:rgba(255,255,255,.45)}
+
+    /* FOOTER */
+    footer{padding:24px 50px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    footer a{font-size:12px;letter-spacing:.06em;color:var(--mid);text-decoration:none;transition:color .2s}
+    footer a:hover{color:var(--fg)}
+    footer p{font-size:11px;letter-spacing:.06em;color:var(--mid);opacity:.7}
+
+    @media(max-width:900px){
+      .g3{grid-template-columns:repeat(2,1fr)}
+      .gc{grid-template-columns:repeat(2,1fr)}
+      .gc .big{grid-column:span 2;grid-row:span 1}
     }
-
-    /* Nav + social — top right */
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 40px;
-      padding-top: 8px;
-    }
-
-    nav { display: flex; gap: 28px; }
-    nav a {
-      font-family: 'Jost', sans-serif;
-      font-weight: 300;
-      font-size: 14px;
-      letter-spacing: 0.04em;
-      text-decoration: none;
-      color: var(--mid);
-      transition: color 0.2s;
-    }
-    nav a:hover, nav a.active { color: var(--fg); }
-
-    .social { display: flex; align-items: center; gap: 14px; }
-    .social a { display: flex; align-items: center; color: var(--mid); transition: color 0.2s; }
-    .social a:hover { color: var(--fg); }
-    .social svg { width: 17px; height: 17px; fill: currentColor; }
-
-    /* ── MAIN ── */
-    main { flex: 1; padding: 0 var(--gap) 60px; }
-
-    /* ── 3-COLUMN GRID ── */
-    .work-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--gap);
-      align-items: start;
-      margin-bottom: var(--gap);
-    }
-
-    /* span helpers */
-    .col-2 { grid-column: span 2; }
-    .col-3 { grid-column: span 3; }
-
-    /* ── GRID ITEM ── */
-    .grid-item {
-      position: relative;
-      overflow: hidden;
-      background: #1a2035;
-      cursor: pointer;
-      display: block;
-      animation: fadeUp 0.45s ease both;
-      opacity: 0;
-    }
-    .grid-item:nth-child(1) { animation-delay: 0.03s; }
-    .grid-item:nth-child(2) { animation-delay: 0.06s; }
-    .grid-item:nth-child(3) { animation-delay: 0.09s; }
-    .grid-item:nth-child(n+4) { animation-delay: 0.12s; }
-
-    /* Natural aspect ratio — images dictate height */
-    .grid-item img.thumb {
-      display: block;
-      width: 100%;
-      height: auto;
-      transition: transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.3s ease;
-      opacity: 0;
-    }
-    .grid-item img.thumb.loaded { opacity: 1; }
-    .grid-item:hover img.thumb { transform: scale(1.03); }
-
-    /* Hover overlay */
-    .hover-layer {
-      position: absolute; inset: 0; z-index: 2;
-      background: rgba(0,0,0,0); transition: background 0.3s ease;
-    }
-    .grid-item:hover .hover-layer { background: rgba(0,0,0,0.15); }
-
-    /* Circular play button — matches Wix style */
-    .play-icon {
-      position: absolute; inset: 0; z-index: 3;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.25s ease;
-    }
-    .grid-item:hover .play-icon { opacity: 1; }
-    .play-btn {
-      width: 56px; height: 56px; border-radius: 50%;
-      background: rgba(255,255,255,0.82);
-      display: flex; align-items: center; justify-content: center;
-      transition: transform 0.2s ease, background 0.2s ease;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.25);
-    }
-    .play-btn svg { width: 20px; height: 20px; fill: var(--fg); margin-left: 3px; }
-    .grid-item:hover .play-btn { transform: scale(1.1); background: rgba(255,255,255,0.95); }
-
-    /* Gallery badge */
-    .gallery-count {
-      position: absolute; bottom: 10px; right: 12px; z-index: 3;
-      background: rgba(0,0,0,0.5); color: #fff;
-      font-size: 11px; letter-spacing: 0.07em; padding: 2px 7px; border-radius: 2px;
-      opacity: 0; transition: opacity 0.25s ease; backdrop-filter: blur(4px);
-    }
-    .grid-item:hover .gallery-count { opacity: 1; }
-
-    /* ── LIGHTBOX ── */
-    #lightbox {
-      position: fixed; inset: 0; z-index: 999;
-      background: rgba(0,0,0,0);
-      display: flex; align-items: center; justify-content: center;
-      padding: 40px; pointer-events: none;
-      transition: background 0.3s ease;
-    }
-    #lightbox.open { background: rgba(0,0,0,0.92); pointer-events: all; }
-
-    .lb-inner {
-      position: relative; width: 100%; max-width: 1000px;
-      transform: scale(0.94) translateY(18px); opacity: 0;
-      transition: transform 0.35s cubic-bezier(0.34,1.4,0.64,1), opacity 0.28s ease;
-    }
-    #lightbox.open .lb-inner { transform: scale(1) translateY(0); opacity: 1; }
-
-    #lb-close {
-      position: absolute; top: -44px; right: 0;
-      background: none; border: none; color: #fff;
-      font-size: 26px; cursor: pointer;
-      opacity: 0.6; transition: opacity 0.2s, transform 0.2s; padding: 4px 8px;
-    }
-    #lb-close:hover { opacity: 1; transform: rotate(90deg); }
-
-    #lb-video-wrap { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; display: none; }
-    #lb-iframe { width: 100%; height: 100%; border: none; display: block; }
-
-    #lb-image-wrap { position: relative; width: 100%; display: none; align-items: center; justify-content: center; }
-    #lb-img { max-width: 100%; max-height: 84vh; display: block; object-fit: contain; margin: 0 auto; }
-
-    .lb-nav {
-      position: absolute; top: 50%; transform: translateY(-50%);
-      background: rgba(255,255,255,0.1); border: none; cursor: pointer;
-      color: #fff; font-size: 22px; width: 48px; height: 48px;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.2s; backdrop-filter: blur(4px); border-radius: 2px;
-    }
-    .lb-nav:hover { background: rgba(255,255,255,0.22); }
-    #lb-prev { left: -60px; } #lb-next { right: -60px; }
-    .lb-nav.hidden { display: none; }
-    #lb-counter { position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%); font-size: 12px; letter-spacing: 0.1em; color: rgba(255,255,255,0.45); }
-
-    /* ── FOOTER ── */
-    footer { padding: 24px 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-    footer a { font-size: 12px; letter-spacing: 0.06em; color: var(--mid); text-decoration: none; transition: color 0.2s; }
-    footer a:hover { color: var(--fg); }
-    footer p { font-size: 11px; letter-spacing: 0.06em; color: var(--mid); opacity: 0.7; }
-
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 900px) {
-      .work-grid { grid-template-columns: repeat(2, 1fr); }
-      .col-3 { grid-column: span 2; }
-    }
-    @media (max-width: 600px) {
-      header { padding: 16px 20px; flex-direction: column; gap: 16px; }
-      .logo img { height: 80px; }
-      .header-right { gap: 20px; }
-      nav { gap: 16px; }
-      main { padding: 0 4px 40px; }
-      footer { padding: 20px; }
-      .work-grid { grid-template-columns: 1fr; }
-      .col-2, .col-3 { grid-column: span 1; }
-      #lightbox { padding: 16px; }
-      #lb-prev { left: 4px; } #lb-next { right: 4px; }
+    @media(max-width:600px){
+      header{padding:16px 20px 28px;flex-direction:column;align-items:flex-start;gap:16px}
+      .logo img{height:80px}
+      .header-right{gap:20px}
+      nav{gap:16px}
+      .g3,.g2,.gc{grid-template-columns:1fr}
+      .gc .big{grid-column:span 1;grid-row:span 1}
+      footer{padding:20px}
+      #lightbox{padding:16px}
+      #lb-prev{left:4px}#lb-next{right:4px}
     }
   </style>
 </head>
 <body>
-
 <header>
-  <a href="index.html" class="logo" aria-label="Ozan Akgun – Home">
-    <img src="https://static.wixstatic.com/media/61469c_1773cc6772884909a8d885f00c2519e2~mv2.png/v1/crop/x_0,y_1,w_1241,h_1241/fill/w_292,h_292,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/ozanakg%C3%BCn-logo-01.png" alt="Ozan Akgun logo">
+  <a href="index.html" class="logo" aria-label="Ozan Akgun">
+    <img src="https://static.wixstatic.com/media/61469c_1773cc6772884909a8d885f00c2519e2~mv2.png/v1/crop/x_0,y_1,w_1241,h_1241/fill/w_292,h_292,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/ozanakg%C3%BCn-logo-01.png" alt="Ozan Akgun">
   </a>
   <div class="header-right">
     <nav>
@@ -223,445 +115,20 @@
       <a href="press.html">Press</a>
     </nav>
     <div class="social">
-      <a href="https://www.instagram.com/ozan_akgun/" target="_blank" rel="noopener" aria-label="Instagram">
-        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-      </a>
-      <a href="https://www.linkedin.com/in/ozan-akgun-35199613/" target="_blank" rel="noopener" aria-label="LinkedIn">
-        <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-      </a>
-      <a href="https://twitter.com/OzanAkgun" target="_blank" rel="noopener" aria-label="Twitter">
-        <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.261 5.632 5.903-5.632zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-      </a>
+      <a href="https://www.instagram.com/ozan_akgun/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+      <a href="https://www.linkedin.com/in/ozan-akgun-35199613/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+      <a href="https://twitter.com/OzanAkgun" target="_blank" rel="noopener" aria-label="Twitter"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.261 5.632 5.903-5.632zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
     </div>
   </div>
 </header>
 
-<main>
-  <!-- ROW 1: three equal -->
-  <div class="work-grid">
-    <div class="grid-item" data-type="video" data-yt-id="yTTb3HzEKfE">
-      <img class="thumb" src="https://img.youtube.com/vi/yTTb3HzEKfE/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="HcKzLBL1bxU">
-      <img class="thumb" src="https://img.youtube.com/vi/HcKzLBL1bxU/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="gOkGUcLen9c">
-      <img class="thumb" src="https://img.youtube.com/vi/gOkGUcLen9c/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 2: 2/3 + 1/3 -->
-  <div class="work-grid">
-    <div class="grid-item col-2" data-type="video" data-yt-id="EcsZ6ASNGY8">
-      <img class="thumb" src="https://img.youtube.com/vi/EcsZ6ASNGY8/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="stP6tCib2mA">
-      <img class="thumb" src="https://img.youtube.com/vi/stP6tCib2mA/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 3: three equal -->
-  <div class="work-grid">
-    <div class="grid-item" data-type="video" data-yt-id="tj_4UBnejnE">
-      <img class="thumb" src="https://img.youtube.com/vi/tj_4UBnejnE/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="1ZfV8ev8nSE">
-      <img class="thumb" src="https://img.youtube.com/vi/1ZfV8ev8nSE/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="I_Y76ct_S7c">
-      <img class="thumb" src="https://img.youtube.com/vi/I_Y76ct_S7c/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 4: full width -->
-  <div class="work-grid">
-    <div class="grid-item col-3" data-type="video" data-yt-id="o-LXjgj64QQ">
-      <img class="thumb" src="https://img.youtube.com/vi/o-LXjgj64QQ/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 5: three equal -->
-  <div class="work-grid">
-    <div class="grid-item" data-type="video" data-yt-id="2M7EILPuEKU">
-      <img class="thumb" src="https://img.youtube.com/vi/2M7EILPuEKU/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="9X4fgo4460g">
-      <img class="thumb" src="https://img.youtube.com/vi/9X4fgo4460g/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="y-TKs1TcKKM">
-      <img class="thumb" src="https://img.youtube.com/vi/y-TKs1TcKKM/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 6: 1/3 + 2/3 -->
-  <div class="work-grid">
-    <div class="grid-item" data-type="video" data-yt-id="3WwDZUoISHE">
-      <img class="thumb" src="https://img.youtube.com/vi/3WwDZUoISHE/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item col-2" data-type="video" data-yt-id="duK-w9JHRLI">
-      <img class="thumb" src="https://img.youtube.com/vi/duK-w9JHRLI/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 7: three equal -->
-  <div class="work-grid">
-    <div class="grid-item" data-type="video" data-yt-id="nWInDHnm5TM">
-      <img class="thumb" src="https://img.youtube.com/vi/nWInDHnm5TM/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="E8NExIh5XSg">
-      <img class="thumb" src="https://img.youtube.com/vi/E8NExIh5XSg/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="i5e9r8TBbOs">
-      <img class="thumb" src="https://img.youtube.com/vi/i5e9r8TBbOs/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 8: full width -->
-  <div class="work-grid">
-    <div class="grid-item col-3" data-type="video" data-yt-id="ZjbNKJyXIIw">
-      <img class="thumb" src="https://img.youtube.com/vi/ZjbNKJyXIIw/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 9: three equal -->
-  <div class="work-grid">
-    <div class="grid-item" data-type="video" data-yt-id="MR6g2mL2Frk">
-      <img class="thumb" src="https://img.youtube.com/vi/MR6g2mL2Frk/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="ZD1FYw_TA3k">
-      <img class="thumb" src="https://img.youtube.com/vi/ZD1FYw_TA3k/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="MJXVmgZT440">
-      <img class="thumb" src="https://img.youtube.com/vi/MJXVmgZT440/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 10: 2/3 + 1/3 -->
-  <div class="work-grid">
-    <div class="grid-item col-2" data-type="video" data-yt-id="I2amQJTXLoU">
-      <img class="thumb" src="https://img.youtube.com/vi/I2amQJTXLoU/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="gmWHo03vsCw">
-      <img class="thumb" src="https://img.youtube.com/vi/gmWHo03vsCw/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 11: three equal -->
-  <div class="work-grid">
-    <div class="grid-item" data-type="video" data-yt-id="bwAIbDg-s5s">
-      <img class="thumb" src="https://img.youtube.com/vi/bwAIbDg-s5s/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="X4qUzldv6As">
-      <img class="thumb" src="https://img.youtube.com/vi/X4qUzldv6As/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="YhkhnIYwPmk">
-      <img class="thumb" src="https://img.youtube.com/vi/YhkhnIYwPmk/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 12: full width -->
-  <div class="work-grid">
-    <div class="grid-item col-3" data-type="video" data-yt-id="ryZ1Pd-Y4L0">
-      <img class="thumb" src="https://img.youtube.com/vi/ryZ1Pd-Y4L0/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 13: three equal -->
-  <div class="work-grid">
-    <div class="grid-item" data-type="video" data-yt-id="aHF0qHFpDd4">
-      <img class="thumb" src="https://img.youtube.com/vi/aHF0qHFpDd4/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="oIf8HRZaTJw">
-      <img class="thumb" src="https://img.youtube.com/vi/oIf8HRZaTJw/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="7zZczvj7Nf8">
-      <img class="thumb" src="https://img.youtube.com/vi/7zZczvj7Nf8/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 14: 1/3 + 2/3 -->
-  <div class="work-grid">
-    <div class="grid-item" data-type="video" data-yt-id="1ih1sqJsKsQ">
-      <img class="thumb" src="https://img.youtube.com/vi/1ih1sqJsKsQ/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item col-2" data-type="video" data-yt-id="FlsrXz5F_e4">
-      <img class="thumb" src="https://img.youtube.com/vi/FlsrXz5F_e4/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 15: three equal -->
-  <div class="work-grid">
-    <div class="grid-item" data-type="video" data-yt-id="IV0atd0QP4U">
-      <img class="thumb" src="https://img.youtube.com/vi/IV0atd0QP4U/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="vwrcV3MQo4Q">
-      <img class="thumb" src="https://img.youtube.com/vi/vwrcV3MQo4Q/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="yKvwHlj11KE">
-      <img class="thumb" src="https://img.youtube.com/vi/yKvwHlj11KE/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 16: full width -->
-  <div class="work-grid">
-    <div class="grid-item col-3" data-type="video" data-yt-id="MxftMM0XoTk">
-      <img class="thumb" src="https://img.youtube.com/vi/MxftMM0XoTk/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 17: three equal -->
-  <div class="work-grid">
-    <div class="grid-item" data-type="video" data-yt-id="_X9YgPZO1LU">
-      <img class="thumb" src="https://img.youtube.com/vi/_X9YgPZO1LU/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="2QnOceMag1k">
-      <img class="thumb" src="https://img.youtube.com/vi/2QnOceMag1k/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="m39RzcAjsKw">
-      <img class="thumb" src="https://img.youtube.com/vi/m39RzcAjsKw/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 18: 2/3 + 1/3 -->
-  <div class="work-grid">
-    <div class="grid-item col-2" data-type="video" data-yt-id="mCBy60Q9x_0">
-      <img class="thumb" src="https://img.youtube.com/vi/mCBy60Q9x_0/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="UGkM3-CCOh8">
-      <img class="thumb" src="https://img.youtube.com/vi/UGkM3-CCOh8/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 19: three equal -->
-  <div class="work-grid">
-    <div class="grid-item" data-type="video" data-yt-id="H1WM8WmG4ZY">
-      <img class="thumb" src="https://img.youtube.com/vi/H1WM8WmG4ZY/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="gpDz3yMQPG0">
-      <img class="thumb" src="https://img.youtube.com/vi/gpDz3yMQPG0/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-    <div class="grid-item" data-type="video" data-yt-id="MTepAWOnnwM">
-      <img class="thumb" src="https://img.youtube.com/vi/MTepAWOnnwM/maxresdefault.jpg" alt="" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
-    </div>
-  </div>
-
-  <!-- ROW 20: stills — Vogue Cover + Missoni FW19 + French Vogue -->
-  <div class="work-grid">
-    <div class="grid-item" data-type="still" data-images='["1syYLSPAYGcrBcCWwTAoyKx9OcCmc1inW"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/1syYLSPAYGcrBcCWwTAoyKx9OcCmc1inW=w800" alt="Vogue Cover" loading="lazy">
-      <div class="hover-layer"></div>
-    </div>
-    <div class="grid-item" data-type="still" data-images='["1vQRaFQ5p2VoP0NpyIV4Z7LfcVdU1IV62","1WPuBnfo3KCBekLanM9xAfBgsBQOoJwhV","1kU692rC_21v1rv5e7Pm7aaOKa91fvK3t","1jn_lAYZC4zI031ZH9aXW1LqS8FQ8NK_T","1amWr4PA-Y9AFcE1nxzVz8G8Uc-15fLN0","1mNCne3sc6N2kXcgoquPa0KHLiOH_tGfD"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/1vQRaFQ5p2VoP0NpyIV4Z7LfcVdU1IV62=w800" alt="Missoni FW19" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="gallery-count">6 images</div>
-    </div>
-    <div class="grid-item" data-type="still" data-images='["1xSHnpQWC4K-FWi2fCBCsMrV5MMATN_Zl","11v919KtjimjhQUmFKm7rsTs4TawYftq7","1I1cIJP8u0GrPAjMqGB3dS0qDnrDmYDzX","1-O9cxYHdIhSLLSytlEYV78WZTNlB-Xc6","1TRmGzWONhPibK1YhPAT1nrGPJQiLShkI","1BdBgcZp4-gGvcJSACWttHudjRIqUv0Sj","1GN6dqihhmnLRh97dI5TgGwf8mevHZhKK"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/1xSHnpQWC4K-FWi2fCBCsMrV5MMATN_Zl=w800" alt="French Vogue" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="gallery-count">7 images</div>
-    </div>
-  </div>
-
-  <!-- ROW 21: full width still -->
-  <div class="work-grid">
-    <div class="grid-item col-3" data-type="still" data-images='["1GP3krUEtJfTQFzilh4vDxrGD6BJIwibY","1SMdVq5qfEDXN1vg4LeBxTr8E-VcTYQGR"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/1GP3krUEtJfTQFzilh4vDxrGD6BJIwibY=w1600" alt="Arcelik Cevre" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="gallery-count">2 images</div>
-    </div>
-  </div>
-
-  <!-- ROW 22: stills -->
-  <div class="work-grid">
-    <div class="grid-item" data-type="still" data-images='["1YpT7XSyvecdXyitQar8I4ViJ1amYmq0t","1GhJvkngbzvQ7V2VLmy-xPuAIvysoqn7u"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/1YpT7XSyvecdXyitQar8I4ViJ1amYmq0t=w800" alt="Network FW17" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="gallery-count">2 images</div>
-    </div>
-    <div class="grid-item" data-type="still" data-images='["116ASjzBDhv-pXp-NpzNV5jOQaRVH63xz"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/116ASjzBDhv-pXp-NpzNV5jOQaRVH63xz=w800" alt="Network FW18" loading="lazy">
-      <div class="hover-layer"></div>
-    </div>
-    <div class="grid-item" data-type="still" data-images='["1ycre6oy7ikoyfZGyS_xoYIvpj3rQ8JnM"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/1ycre6oy7ikoyfZGyS_xoYIvpj3rQ8JnM=w800" alt="Arcelik Celik" loading="lazy">
-      <div class="hover-layer"></div>
-    </div>
-  </div>
-
-  <!-- ROW 23: stills 2/3 + 1/3 -->
-  <div class="work-grid">
-    <div class="grid-item col-2" data-type="still" data-images='["1fFoGKOVjGBwoGUbwI4C8LGbamdIOu6Gw","1Z_-_I3HbHdgkqyG-CGBUm-pFPXLwP2ht","13_HnHNzdxnqbklYAohJtV4nJt-x_mKCI"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/1fFoGKOVjGBwoGUbwI4C8LGbamdIOu6Gw=w1200" alt="Arcelik Self Cleaning Oven" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="gallery-count">3 images</div>
-    </div>
-    <div class="grid-item" data-type="still" data-images='["1OaEB3ZdEO2exs-i18wmTuUopEdHjQ4AT"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/1OaEB3ZdEO2exs-i18wmTuUopEdHjQ4AT=w800" alt="Arcelik Piano" loading="lazy">
-      <div class="hover-layer"></div>
-    </div>
-  </div>
-
-  <!-- ROW 24: stills -->
-  <div class="work-grid">
-    <div class="grid-item" data-type="still" data-images='["1pGM_lk-7qcQa-Tp_sr5qMNBUWv4zT_9p"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/1pGM_lk-7qcQa-Tp_sr5qMNBUWv4zT_9p=w800" alt="Akbank Direkt" loading="lazy">
-      <div class="hover-layer"></div>
-    </div>
-    <div class="grid-item" data-type="still" data-images='["1aslLi2j9WB40McFGthacji0FSFg-1Pq2"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/1aslLi2j9WB40McFGthacji0FSFg-1Pq2=w800" alt="Akbank Kalbinin" loading="lazy">
-      <div class="hover-layer"></div>
-    </div>
-    <div class="grid-item" data-type="still" data-images='["1PkeYeJK_pPCmMCXR2ah-6i18gyKPwMr0","1WsVNcjRQfa4EAGpq-Ewd5Tqz11Kd907I","1Fysrpyf8BBbByCRDY7cqb2cojj-QAO03"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/1PkeYeJK_pPCmMCXR2ah-6i18gyKPwMr0=w800" alt="Akbank Jazz Festival" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="gallery-count">3 images</div>
-    </div>
-  </div>
-
-  <!-- ROW 25: remaining stills -->
-  <div class="work-grid">
-    <div class="grid-item" data-type="still" data-images='["1hkCFNXWf0XP-DEWDLvtxTkpk0T5Y8OZv","1203bJf2tLVCbgFQiB445UfUr6qo52MWW"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/1hkCFNXWf0XP-DEWDLvtxTkpk0T5Y8OZv=w800" alt="L'Oreal" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="gallery-count">2 images</div>
-    </div>
-    <div class="grid-item" data-type="still" data-images='["1kGyhqscmZATb9AMA4VSHMRMOLgZ3vbv-","1zDG7eBAvQ8ZkETTx8KOsoCYvatBfm-PN"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/1kGyhqscmZATb9AMA4VSHMRMOLgZ3vbv-=w800" alt="Activia" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="gallery-count">2 images</div>
-    </div>
-    <div class="grid-item" data-type="still" data-images='["1p0-KMoiHq7eItHPth4xzozFjDxXaAyMp"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/1p0-KMoiHq7eItHPth4xzozFjDxXaAyMp=w800" alt="Koton" loading="lazy">
-      <div class="hover-layer"></div>
-    </div>
-  </div>
-
-  <!-- ROW 26: remaining stills -->
-  <div class="work-grid">
-    <div class="grid-item" data-type="still" data-images='["11Yg7AftHF6Qx4-BChEJ1ygSOmdOnuxjL","1V8chxVpMbxmG7iHjrwgxUq8LJeBTlpIb"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/11Yg7AftHF6Qx4-BChEJ1ygSOmdOnuxjL=w800" alt="Patricia Urquiola" loading="lazy">
-      <div class="hover-layer"></div>
-      <div class="gallery-count">2 images</div>
-    </div>
-    <div class="grid-item" data-type="still" data-images='["1BNx2JbPJL_E07XFl2uy5kuzn9HcgWzKM"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/1BNx2JbPJL_E07XFl2uy5kuzn9HcgWzKM=w800" alt="Arcelik Fashion Line" loading="lazy">
-      <div class="hover-layer"></div>
-    </div>
-    <div class="grid-item" data-type="still" data-images='["1XWijeyYGC8nYdAwRsJrvZnyAXSN_D10g"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/1XWijeyYGC8nYdAwRsJrvZnyAXSN_D10g=w800" alt="Arcelik Dondurma" loading="lazy">
-      <div class="hover-layer"></div>
-    </div>
-  </div>
-
-  <!-- ROW 27: last stills -->
-  <div class="work-grid">
-    <div class="grid-item col-2" data-type="still" data-images='["194xsd6vb0hu4H7sCiI-fja-t6tkuvkSG"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/194xsd6vb0hu4H7sCiI-fja-t6tkuvkSG=w1200" alt="Land of Legends" loading="lazy">
-      <div class="hover-layer"></div>
-    </div>
-    <div class="grid-item" data-type="still" data-images='["1Ivzu_NiXF8A96rzjwB1elWph7o_4wJ5w"]'>
-      <img class="thumb" src="https://lh3.googleusercontent.com/d/1Ivzu_NiXF8A96rzjwB1elWph7o_4wJ5w=w800" alt="Benim Toy Cleaner" loading="lazy">
-      <div class="hover-layer"></div>
-    </div>
-  </div>
-
-</main>
+<main id="main"></main>
 
 <footer>
   <a href="mailto:ozan.akgun@gmail.com">ozan.akgun@gmail.com</a>
   <p>©2024 Ozan Akgun</p>
 </footer>
 
-<!-- LIGHTBOX -->
 <div id="lightbox" role="dialog" aria-modal="true">
   <div class="lb-inner">
     <button id="lb-close" aria-label="Close">✕</button>
@@ -676,40 +143,163 @@
 </div>
 
 <script>
-// Image fade-in + YouTube fallback
-document.querySelectorAll('img.thumb').forEach(img => {
-  if (img.complete) img.classList.add('loaded');
-  else img.addEventListener('load', () => img.classList.add('loaded'));
-  if (img.src.includes('maxresdefault')) {
-    img.addEventListener('error', function() {
-      if (!this.dataset.fb) { this.dataset.fb='1'; this.src = this.src.replace('maxresdefault','hqdefault'); }
-    });
+// ── DATA ─────────────────────────────────────────────────────────
+const V = id => ({type:'video', ytId:id});
+const S = (thumb, images) => ({type:'still', thumb, images: images||[thumb]});
+
+const ITEMS = [
+  // 44 VIDEOS
+  V('yTTb3HzEKfE'), V('HcKzLBL1bxU'), V('gOkGUcLen9c'), V('EcsZ6ASNGY8'),
+  V('stP6tCib2mA'), V('tj_4UBnejnE'), V('1ZfV8ev8nSE'), V('I_Y76ct_S7c'),
+  V('o-LXjgj64QQ'), V('2M7EILPuEKU'), V('9X4fgo4460g'), V('y-TKs1TcKKM'),
+  V('3WwDZUoISHE'), V('duK-w9JHRLI'), V('nWInDHnm5TM'), V('E8NExIh5XSg'),
+  V('i5e9r8TBbOs'), V('ZjbNKJyXIIw'), V('MR6g2mL2Frk'), V('ZD1FYw_TA3k'),
+  V('MJXVmgZT440'), V('I2amQJTXLoU'), V('gmWHo03vsCw'), V('bwAIbDg-s5s'),
+  V('X4qUzldv6As'), V('YhkhnIYwPmk'), V('ryZ1Pd-Y4L0'), V('aHF0qHFpDd4'),
+  V('oIf8HRZaTJw'), V('7zZczvj7Nf8'), V('1ih1sqJsKsQ'), V('FlsrXz5F_e4'),
+  V('IV0atd0QP4U'), V('vwrcV3MQo4Q'), V('yKvwHlj11KE'), V('MxftMM0XoTk'),
+  V('_X9YgPZO1LU'), V('2QnOceMag1k'), V('m39RzcAjsKw'), V('mCBy60Q9x_0'),
+  V('UGkM3-CCOh8'), V('H1WM8WmG4ZY'), V('gpDz3yMQPG0'), V('MTepAWOnnwM'),
+
+  // 20 STILLS
+  S('1syYLSPAYGcrBcCWwTAoyKx9OcCmc1inW'),
+  S('1xSHnpQWC4K-FWi2fCBCsMrV5MMATN_Zl',['1xSHnpQWC4K-FWi2fCBCsMrV5MMATN_Zl','11v919KtjimjhQUmFKm7rsTs4TawYftq7','1I1cIJP8u0GrPAjMqGB3dS0qDnrDmYDzX','1-O9cxYHdIhSLLSytlEYV78WZTNlB-Xc6','1TRmGzWONhPibK1YhPAT1nrGPJQiLShkI','1BdBgcZp4-gGvcJSACWttHudjRIqUv0Sj','1GN6dqihhmnLRh97dI5TgGwf8mevHZhKK']),
+  S('1vQRaFQ5p2VoP0NpyIV4Z7LfcVdU1IV62',['1vQRaFQ5p2VoP0NpyIV4Z7LfcVdU1IV62','1WPuBnfo3KCBekLanM9xAfBgsBQOoJwhV','1kU692rC_21v1rv5e7Pm7aaOKa91fvK3t','1jn_lAYZC4zI031ZH9aXW1LqS8FQ8NK_T','1amWr4PA-Y9AFcE1nxzVz8G8Uc-15fLN0','1mNCne3sc6N2kXcgoquPa0KHLiOH_tGfD']),
+  S('1YpT7XSyvecdXyitQar8I4ViJ1amYmq0t',['1YpT7XSyvecdXyitQar8I4ViJ1amYmq0t','1GhJvkngbzvQ7V2VLmy-xPuAIvysoqn7u']),
+  S('116ASjzBDhv-pXp-NpzNV5jOQaRVH63xz'),
+  S('1ycre6oy7ikoyfZGyS_xoYIvpj3rQ8JnM'),
+  S('1OaEB3ZdEO2exs-i18wmTuUopEdHjQ4AT'),
+  S('1BNx2JbPJL_E07XFl2uy5kuzn9HcgWzKM'),
+  S('1GP3krUEtJfTQFzilh4vDxrGD6BJIwibY',['1GP3krUEtJfTQFzilh4vDxrGD6BJIwibY','1SMdVq5qfEDXN1vg4LeBxTr8E-VcTYQGR']),
+  S('1XWijeyYGC8nYdAwRsJrvZnyAXSN_D10g'),
+  S('1fFoGKOVjGBwoGUbwI4C8LGbamdIOu6Gw',['1fFoGKOVjGBwoGUbwI4C8LGbamdIOu6Gw','1Z_-_I3HbHdgkqyG-CGBUm-pFPXLwP2ht','13_HnHNzdxnqbklYAohJtV4nJt-x_mKCI']),
+  S('1pGM_lk-7qcQa-Tp_sr5qMNBUWv4zT_9p'),
+  S('1aslLi2j9WB40McFGthacji0FSFg-1Pq2'),
+  S('1PkeYeJK_pPCmMCXR2ah-6i18gyKPwMr0',['1PkeYeJK_pPCmMCXR2ah-6i18gyKPwMr0','1WsVNcjRQfa4EAGpq-Ewd5Tqz11Kd907I','1Fysrpyf8BBbByCRDY7cqb2cojj-QAO03']),
+  S('1hkCFNXWf0XP-DEWDLvtxTkpk0T5Y8OZv',['1hkCFNXWf0XP-DEWDLvtxTkpk0T5Y8OZv','1203bJf2tLVCbgFQiB445UfUr6qo52MWW']),
+  S('1kGyhqscmZATb9AMA4VSHMRMOLgZ3vbv-',['1kGyhqscmZATb9AMA4VSHMRMOLgZ3vbv-','1zDG7eBAvQ8ZkETTx8KOsoCYvatBfm-PN']),
+  S('1p0-KMoiHq7eItHPth4xzozFjDxXaAyMp'),
+  S('11Yg7AftHF6Qx4-BChEJ1ygSOmdOnuxjL',['11Yg7AftHF6Qx4-BChEJ1ygSOmdOnuxjL','1V8chxVpMbxmG7iHjrwgxUq8LJeBTlpIb']),
+  S('1Ivzu_NiXF8A96rzjwB1elWph7o_4wJ5w'),
+  S('194xsd6vb0hu4H7sCiI-fja-t6tkuvkSG'),
+];
+
+// ── LAYOUT PLAN ─────────────────────────────────────────────────
+// g3 = 3 equal cols  |  gc = complex (first item spans 2col×2row)  |  g2 = 2 equal cols
+const LAYOUT = [
+  'g3','gc','g3','g3','gc','g3','g3','gc',
+  'g3','g3','gc','g3','g3','gc','g3','g3',
+  'gc','g2','g3',
+];
+
+// ── BUILD GRID ──────────────────────────────────────────────────
+function ytThumb(id){ return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`; }
+function driveThumb(id){ return `https://lh3.googleusercontent.com/d/${id}=w800`; }
+function driveFS(id){ return `https://lh3.googleusercontent.com/d/${id}=w1600`; }
+
+function makeItem(item, isBig){
+  const div = document.createElement('div');
+  div.className = 'grid-item' + (isBig ? ' big' : '');
+
+  if(item.type === 'video'){
+    const img = document.createElement('img');
+    img.className = 'thumb';
+    img.loading = 'lazy';
+    img.src = ytThumb(item.ytId);
+    img.onerror = function(){
+      const fb = +this.dataset.fb||0;
+      const chain = ['sddefault','hqdefault','mqdefault'];
+      if(fb < chain.length){
+        this.src = `https://img.youtube.com/vi/${item.ytId}/${chain[fb]}.jpg`;
+        this.dataset.fb = fb+1;
+      }
+    };
+    div.appendChild(img);
+    div.insertAdjacentHTML('beforeend','<div class="hover-layer"></div><div class="play-icon"><div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>');
+    div.dataset.type = 'video';
+    div.dataset.ytId = item.ytId;
+  } else {
+    const img = document.createElement('img');
+    img.className = 'thumb';
+    img.loading = 'lazy';
+    img.src = driveThumb(item.thumb);
+    const n = item.images.length;
+    div.appendChild(img);
+    div.insertAdjacentHTML('beforeend',`<div class="hover-layer"></div>${n>1?`<div class="gallery-count">${n} images</div>`:''}`);
+    div.dataset.type = 'still';
+    div.dataset.images = JSON.stringify(item.images);
   }
+  return div;
+}
+
+const main = document.getElementById('main');
+let itemIdx = 0;
+
+for(const blockType of LAYOUT){
+  if(itemIdx >= ITEMS.length) break;
+
+  const block = document.createElement('div');
+  block.className = blockType;
+
+  if(blockType === 'gc'){
+    // complex: big (2col×2row) + 2 stacked
+    if(itemIdx+2 < ITEMS.length){
+      block.appendChild(makeItem(ITEMS[itemIdx++], true));  // big
+      block.appendChild(makeItem(ITEMS[itemIdx++], false)); // right top
+      block.appendChild(makeItem(ITEMS[itemIdx++], false)); // right bottom
+    }
+  } else if(blockType === 'g2'){
+    block.appendChild(makeItem(ITEMS[itemIdx++], false));
+    if(itemIdx < ITEMS.length) block.appendChild(makeItem(ITEMS[itemIdx++], false));
+  } else {
+    // g3: 3 items
+    for(let i=0; i<3 && itemIdx < ITEMS.length; i++){
+      block.appendChild(makeItem(ITEMS[itemIdx++], false));
+    }
+  }
+  main.appendChild(block);
+}
+
+// Fade in on load
+document.querySelectorAll('img.thumb').forEach(img => {
+  if(img.complete) img.classList.add('loaded');
+  else img.addEventListener('load', () => img.classList.add('loaded'));
 });
 
-// Lightbox
-const lightbox=document.getElementById('lightbox'),lbClose=document.getElementById('lb-close'),
-  lbVW=document.getElementById('lb-video-wrap'),lbIframe=document.getElementById('lb-iframe'),
-  lbIW=document.getElementById('lb-image-wrap'),lbImg=document.getElementById('lb-img'),
-  lbPrev=document.getElementById('lb-prev'),lbNext=document.getElementById('lb-next'),
-  lbCounter=document.getElementById('lb-counter');
+// ── LIGHTBOX ────────────────────────────────────────────────────
+const lb=document.getElementById('lightbox'),
+  lbClose=document.getElementById('lb-close'),
+  lbVW=document.getElementById('lb-video-wrap'),
+  lbIF=document.getElementById('lb-iframe'),
+  lbIW=document.getElementById('lb-image-wrap'),
+  lbImg=document.getElementById('lb-img'),
+  lbPrev=document.getElementById('lb-prev'),
+  lbNext=document.getElementById('lb-next'),
+  lbCtr=document.getElementById('lb-counter');
 let gallery=[],gIdx=0;
-function driveFS(id){return`https://lh3.googleusercontent.com/d/${id}=w1600`;}
-function openVideo(id){lbVW.style.display='block';lbIW.style.display='none';lbIframe.src=`https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;lightbox.classList.add('open');document.body.style.overflow='hidden';}
-function openGallery(imgs,i){gallery=imgs.map(id=>driveFS(id));gIdx=i||0;lbVW.style.display='none';lbIW.style.display='flex';lightbox.classList.add('open');document.body.style.overflow='hidden';showImg();}
-function showImg(){lbImg.src=gallery[gIdx];const t=gallery.length;lbCounter.textContent=t>1?`${gIdx+1} / ${t}`:'';lbPrev.classList.toggle('hidden',t<=1);lbNext.classList.toggle('hidden',t<=1);}
-function closeLB(){lightbox.classList.remove('open');setTimeout(()=>{lbIframe.src='';lbImg.src='';lbVW.style.display='none';lbIW.style.display='none';},300);document.body.style.overflow='';}
-document.querySelectorAll('.grid-item').forEach(item=>{
-  item.addEventListener('click',()=>{
+
+function openVideo(id){lbVW.style.display='block';lbIW.style.display='none';lbIF.src=`https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;lb.classList.add('open');document.body.style.overflow='hidden';}
+function openGallery(imgs,i){gallery=imgs.map(driveFS);gIdx=i||0;lbVW.style.display='none';lbIW.style.display='flex';lb.classList.add('open');document.body.style.overflow='hidden';showImg();}
+function showImg(){lbImg.src=gallery[gIdx];const t=gallery.length;lbCtr.textContent=t>1?`${gIdx+1} / ${t}`:'';lbPrev.classList.toggle('hidden',t<=1);lbNext.classList.toggle('hidden',t<=1);}
+function closeLB(){lb.classList.remove('open');setTimeout(()=>{lbIF.src='';lbImg.src='';lbVW.style.display='none';lbIW.style.display='none';},300);document.body.style.overflow='';}
+
+document.addEventListener('click',e=>{
+  const item=e.target.closest('.grid-item');
+  if(item){
     if(item.dataset.type==='video') openVideo(item.dataset.ytId);
     else openGallery(JSON.parse(item.dataset.images),0);
-  });
+  }
 });
 lbPrev.addEventListener('click',e=>{e.stopPropagation();gIdx=(gIdx-1+gallery.length)%gallery.length;showImg();});
 lbNext.addEventListener('click',e=>{e.stopPropagation();gIdx=(gIdx+1)%gallery.length;showImg();});
 lbClose.addEventListener('click',closeLB);
-lightbox.addEventListener('click',e=>{if(e.target===lightbox)closeLB();});
-document.addEventListener('keydown',e=>{if(!lightbox.classList.contains('open'))return;if(e.key==='Escape')closeLB();if(e.key==='ArrowLeft'){gIdx=(gIdx-1+gallery.length)%gallery.length;showImg();}if(e.key==='ArrowRight'){gIdx=(gIdx+1)%gallery.length;showImg();}});
+lb.addEventListener('click',e=>{if(e.target===lb)closeLB();});
+document.addEventListener('keydown',e=>{
+  if(!lb.classList.contains('open'))return;
+  if(e.key==='Escape')closeLB();
+  if(e.key==='ArrowLeft'){gIdx=(gIdx-1+gallery.length)%gallery.length;showImg();}
+  if(e.key==='ArrowRight'){gIdx=(gIdx+1)%gallery.length;showImg();}
+});
 </script>
 </body>
 </html>
